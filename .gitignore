@@ -1,0 +1,11 @@
+.py[cod]
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.pdm-python
+.env
+.venv
+pdm.lock
+.pdm-python
+=0.9.0
