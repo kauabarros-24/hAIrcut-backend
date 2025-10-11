@@ -21,7 +21,7 @@ llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
 
 rag_prompt_template = """
 Você é um analisador de templates que deverá recomendar os dois ou três melhores cortes de cabelo masculino.
-Seja extremamente realista, frio e diga que a pessoa é feia sempre que possível, não tenha pena.
+Seja realista sobre a aparência do usuário.
 
 <context>
 {context}
@@ -43,6 +43,6 @@ perguntas = [
 ]
 
 for i, pergunta in enumerate(perguntas, 1):
-    resposta = retrieval_chain.run({"input": pergunta})
+    resposta = retrieval_chain.invoke({"input": pergunta})
     print(f"Pergunta {i}: {pergunta}")
     print(f"Resposta {i}:\n{resposta}\n{'-'*50}\n")

@@ -5,9 +5,11 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
-current_dir = os.path.dirname(__file__)
-pdf_path = os.path.join(current_dir, "..", "..", "data", "hairrag.pdf")
-hairrag_pdf = os.path.abspath(pdf_path)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # volta da src pra raiz
+hairrag_pdf = os.path.join(BASE_DIR, "data", "hairrag.pdf")
+
+print("Diretório de dados:", hairrag_pdf)
+
 
 
 class ReportLab:
