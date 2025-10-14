@@ -10,11 +10,7 @@ hairrag_pdf = os.path.join(BASE_DIR, "data", "hairrag.pdf")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
 print("Diretório de dados:", hairrag_pdf)
-
-
-
 class ReportLab:
     def getInitialDocs(self):
         try:
