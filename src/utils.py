@@ -1,13 +1,15 @@
 import os
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-import uuid
-from tortoise import fields, models
+from src.schemas import UserCreateSchema
+from passlib.context import CryptContext
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  
 hairrag_pdf = os.path.join(BASE_DIR, "data", "hairrag.pdf")
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 print("Diretório de dados:", hairrag_pdf)
 
@@ -36,8 +38,40 @@ class ReportLab:
         except Exception as error:
             raise ValueError(f"There was an exception in ReportLab class: {error}")
         
-class UUIDModel(models.Model):
-    uuid = fields.UUIDField(pk=True, default=uuid.uuid4)
+async def create_user(user_data: UserCreateSchema):
     
-    class Meta:
-        abstract = True  
+    from src.models import User
+    
+    existing_user = await User.get_or_none(email=user_data.email)
+    if existing_user:
+        return {
+            "message": "User already exists with this email",
+            "status": 409,
+         }
+
+    hashed_password = pwd_context.hash(user_data.password)
+
+    try:
+        user = await User.create(
+            name=user_data.name,
+            email=user_data.email,
+            phone=user_data.phone,
+            password=hashed_password  
+        )
+        
+    except Exception as error:
+        return {
+            "status": 500,
+            "message": f"Error creating user: {error}"
+        }
+
+    return {
+       "message": "New user created successfully",
+       "status": 201,
+       "user": {
+           "uuid": str(user.uuid), 
+           "email": user.email,
+           "phone": user.phone,
+           "name": user.name
+       }
+    }

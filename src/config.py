@@ -6,13 +6,15 @@ load_dotenv()
 
 DB_URL = os.getenv("DB_URL")
 
-async def init_db():
-    await Tortoise.init(
-        db_url=DB_URL,
-        modules={"models":["models"]}
-        
-    )
-    await Tortoise.generate_schemas()
+TORTOISE_ORM = {
+    "connections": {"default": DB_URL},  
+    "apps": {
+        "models": {
+            "models": ["src.models", "aerich.models"],  
+            "default_connection": "default",
+        }
+    }
+}
     
 
 try:
